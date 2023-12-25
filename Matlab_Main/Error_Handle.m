@@ -1,0 +1,25 @@
+classdef Error_Handle < utilities
+   
+    properties ( Access = public)
+        handle_levles = [];
+    end
+
+    methods
+        function this = Error_Handle()
+        this.handle_levles.ERROR = 'error';
+        this.handle_levles.WARNING  ='warn';
+        this.handle_levles.NO_INTERRUPT  ='soft';
+
+
+        end
+
+        function outputArg = Assert_handle(obj,Variable,Error_msg,Error_level)
+                        
+            outputArg = true;
+            temp = isempty(Variable);
+            assert(temp == 0 ,Error_msg,Error_level);
+            outputArg = false;
+            
+        end
+    end
+end

@@ -1,0 +1,71 @@
+<deployment-project plugin="plugin.apptool" plugin-version="1.0">
+  <configuration build-checksum="2063326741" file="C:\Users\Sapir\OneDrive - Holon Institute of Technology\Final_Project\Matlab_Main\Virtual_DSA_CT.prj" location="C:\Users\Sapir\OneDrive - Holon Institute of Technology\Final_Project\Matlab_Main" name="Virtual_DSA_CT" target="target.mlapps" target-name="Package App">
+    <param.appname>Virtual_DSA_CT</param.appname>
+    <param.authnamewatermark>Sapir_Paley</param.authnamewatermark>
+    <param.email>sapir75@outlook.com</param.email>
+    <param.company>H.I.T</param.company>
+    <param.icon />
+    <param.icons />
+    <param.summary />
+    <param.description>2.0 : adding treshhold, error mssages, utility class , logics and buttons
+3.0 : added FPS run ( one step/chosen fps) , optional saving ROI analysied to folder</param.description>
+    <param.screenshot>C:\Users\Sapir\AppData\Local\Temp\tp918c263d_bbb3_4004_b2a6_39c6b692bed7.png</param.screenshot>
+    <param.version>3.0</param.version>
+    <param.products.name />
+    <param.products.id />
+    <param.products.version />
+    <param.platforms />
+    <param.output>${PROJECT_ROOT}</param.output>
+    <param.guid>8c3436f3-e9d4-45fb-861a-9cf8aae8b2fc</param.guid>
+    <unset>
+      <param.icon />
+      <param.icons />
+      <param.summary />
+      <param.products.name />
+      <param.products.id />
+      <param.products.version />
+      <param.platforms />
+      <param.output />
+    </unset>
+    <fileset.main>
+      <file>${PROJECT_ROOT}\Virtual_CT.mlapp</file>
+    </fileset.main>
+    <fileset.depfun>
+      <file>${PROJECT_ROOT}\Analysys_CT.m</file>
+      <file>${PROJECT_ROOT}\CT_Perfusion.m</file>
+      <file>${PROJECT_ROOT}\Dialog_box.m</file>
+      <file>${PROJECT_ROOT}\Dicom_Table_properties.csv</file>
+      <file>${PROJECT_ROOT}\Error_Handle.m</file>
+      <file>${PROJECT_ROOT}\Load_Box.m</file>
+      <file>${PROJECT_ROOT}\ROI_CT.m</file>
+      <file>${PROJECT_ROOT}\utilities.m</file>
+    </fileset.depfun>
+    <fileset.resources>
+      <file>${PROJECT_ROOT}\Time_Frequency.m</file>
+    </fileset.resources>
+    <fileset.package />
+    <build-deliverables>
+      <file location="C:\Users\Sapir\OneDrive - Holon Institute of Technology\Final_Project" name="Matlab_Main" optional="false">C:\Users\Sapir\OneDrive - Holon Institute of Technology\Final_Project\Matlab_Main</file>
+    </build-deliverables>
+    <workflow />
+    <matlab>
+      <root>C:\Program Files\MATLAB\R2023a</root>
+      <toolboxes />
+    </matlab>
+    <platform>
+      <unix>false</unix>
+      <mac>false</mac>
+      <windows>true</windows>
+      <win2k>false</win2k>
+      <winxp>false</winxp>
+      <vista>false</vista>
+      <linux>false</linux>
+      <solaris>false</solaris>
+      <osver>10.0</osver>
+      <os32>false</os32>
+      <os64>true</os64>
+      <arch>win64</arch>
+      <matlab>true</matlab>
+    </platform>
+  </configuration>
+</deployment-project>

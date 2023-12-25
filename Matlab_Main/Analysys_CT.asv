@@ -1,0 +1,29 @@
+classdef Analysys_CT < ROI_CT
+    %UNTITLED2 Summary of this class goes here
+    %   Detailed explanation goes here
+
+    properties (Access = public)
+        mat_Chosen_Edge_Detection = [];
+        count_analysys_img = 1;
+    end
+
+    methods
+        function this = Analysys_CT()
+
+        
+
+        end
+
+        function outputArg = Canny_Edge_Detection(this)
+
+            outputArg = edge(this.ROI_Mask,'canny',this.Global_image_threshold,0.5); % To detemine Deviation
+
+            % imshow(outputArg);
+            % 
+            % close(gcf);
+
+           %outputArg = edge(this.ROI_Mask,'canny',[0.01 0.05],0.5); % To detemine Deviation
+           
+        end
+    end
+end

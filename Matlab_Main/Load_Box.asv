@@ -1,0 +1,37 @@
+classdef Load_Box < utilities
+    %UNTITLED5 Summary of this class goes here
+    %   Detailed explanation goes here
+
+    properties
+        
+        x=5;
+    end
+
+    methods
+
+        
+        function this = Load_Box()
+
+        end
+
+        function outputArg = Get_Load_Box_handle(this)
+
+            outputArg =waitbar(0, 'Creating Dicom Metrix...');
+         end
+
+        function out_buffer = Porcess_load(this,dBar_length,pload_handle,sInput_text)
+
+            Display_text=[sInput_text,'.....%d%%'];
+
+                waitbar(dBar_length, pload_handle, sprintf(Display_text, int32((dBar_length)*100)));
+
+        end
+
+        function out_buffer = Close_Load_ny_handle(this,pload_handle)
+
+           close(pload_handle);
+
+        end
+
+    end
+end
