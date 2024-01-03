@@ -13,6 +13,7 @@ classdef Analysys_CT < ROI_CT
         iSet_Step_Counter = 1;
         iX_Time_Vector = [];
         iY_Mean_Intensity_vector = [];
+        iFrame_number_chosen =[];
     end
 
     methods
@@ -43,10 +44,9 @@ classdef Analysys_CT < ROI_CT
                dMean_pixelIntensities = mean(matCanny_resault(:));
                dTime_set = this.iSet_Counter + this.iBlock_Counter*this.dStep_inteval_PERFUSION;
                sSet_name= "set" + num2str((this.iSet_Counter+1));
-               sBlock_name = "block_" + num2str(this.iBlock_Counter);
-               sBlock_name= {dMean_pixelIntensities,dTime_set,matCanny_resault};
+               % sBlock_name = "block_" + num2str(this.iBlock_Counter);
+               sBlock_name= {dMean_pixelIntensities,dTime_set};
                this.table_Perfusion{this.iBlock_Counter,sSet_name} = sBlock_name;
-               
                outputArg =this.table_Perfusion;
 
 
@@ -61,13 +61,12 @@ classdef Analysys_CT < ROI_CT
              this.iSet_Counter =0;
                 while this.iSet_Counter <30
                     sSet_name= "set" + num2str((this.iSet_Counter+1));
-                    Data_vecotr = this.table_Perfusion{1,sSet_name};
+                    Data_vecotr = this.table_Perfusion{str2double(this.iFrame_number_chosen),sSet_name};
                     y=[y, Data_vecotr{1,1}];
                     x=[x,Data_vecotr{1,2}];
                     this.iSet_Counter = this.iSet_Counter +1;
                 end
 
-
-         end
+           end
     end
 end
