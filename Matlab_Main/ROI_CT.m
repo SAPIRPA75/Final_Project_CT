@@ -35,7 +35,7 @@ classdef ROI_CT < CT_Perfusion
 
                    case 'OK'
                
-                              imshow(this.mat_sdicom_Images{1,1});
+                              imshow(this.mat_sdicom_Images{1,1}*25);
                               vec_ROI_draw = drawfreehand;
                               this.vec_ROI_pos_data= vec_ROI_draw.Position;
                               wait(vec_ROI_draw);

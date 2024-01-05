@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.apptool" plugin-version="1.0">
-  <configuration build-checksum="2063326741" file="C:\Users\Sapir\OneDrive - Holon Institute of Technology\Final_Project\Matlab_Main\Virtual_DSA_CT.prj" location="C:\Users\Sapir\OneDrive - Holon Institute of Technology\Final_Project\Matlab_Main" name="Virtual_DSA_CT" target="target.mlapps" target-name="Package App">
+  <configuration build-checksum="4107851196" file="C:\Users\Sapir\OneDrive - Holon Institute of Technology\Final_Project\Matlab_Main\Virtual_DSA_CT.prj" location="C:\Users\Sapir\OneDrive - Holon Institute of Technology\Final_Project\Matlab_Main" name="Virtual_DSA_CT" target="target.mlapps" target-name="Package App">
     <param.appname>Virtual_DSA_CT</param.appname>
     <param.authnamewatermark>Sapir_Paley</param.authnamewatermark>
     <param.email>sapir75@outlook.com</param.email>
@@ -8,9 +8,10 @@
     <param.icons />
     <param.summary />
     <param.description>2.0 : adding treshhold, error mssages, utility class , logics and buttons
-3.0 : added FPS run ( one step/chosen fps) , optional saving ROI analysied to folder</param.description>
-    <param.screenshot>C:\Users\Sapir\AppData\Local\Temp\tp918c263d_bbb3_4004_b2a6_39c6b692bed7.png</param.screenshot>
-    <param.version>3.0</param.version>
+3.0 : added FPS run ( one step/chosen fps) , optional saving ROI analysied to folder
+4.0 : added Original photo display and graph for ct perfusion</param.description>
+    <param.screenshot>C:\Users\Sapir\AppData\Local\Temp\tp59f709c0_fef8_4dfb_b048_aaee87e09c4e.png</param.screenshot>
+    <param.version>4.0</param.version>
     <param.products.name />
     <param.products.id />
     <param.products.version />
@@ -36,6 +37,7 @@
       <file>${PROJECT_ROOT}\Dialog_box.m</file>
       <file>${PROJECT_ROOT}\Dicom_Table_properties.csv</file>
       <file>${PROJECT_ROOT}\Error_Handle.m</file>
+      <file>${PROJECT_ROOT}\HIT_logo.jpg</file>
       <file>${PROJECT_ROOT}\Load_Box.m</file>
       <file>${PROJECT_ROOT}\ROI_CT.m</file>
       <file>${PROJECT_ROOT}\utilities.m</file>
