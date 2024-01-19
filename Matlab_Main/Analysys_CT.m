@@ -20,6 +20,7 @@ classdef Analysys_CT < ROI_CT
         function this = Analysys_CT()
 
             this.dStep_inteval_PERFUSION = 1/this.iRepiptive_frame_PERFUSION;
+         
             % columnNames = {'set','MeanIntensity', 'CurrentTime', 'BinaryImage'};
             % this.table_Perfusion = table('Size',[690 4],'VariableNames',columnNames,'VariableTypes',{'double','double','double','cell'});
 
@@ -28,8 +29,10 @@ classdef Analysys_CT < ROI_CT
 
         function outputArg = Canny_Edge_Detection(this)
 
-            outputArg = edge(this.ROI_Mask,'canny',this.Global_image_threshold,0.5); % To detemine Deviation
-
+            edges = edge(this.ROI_Mask,'canny',this.Global_image_threshold,0.5); % To detemine Deviation
+            outputArg=edges;
+            %outputArg= imfill(edges, 'holes');
+            %outputArg = imbinarize(this.ROI_Mask,this.Global_image_threshold);
             % imshow(outputArg);
             % 
             % close(gcf);

@@ -8,7 +8,6 @@ classdef ROI_CT < CT_Perfusion
         Global_image_threshold=[];
         Img_present_roi=[]
         bFlag_Roi_saved_in_csv=[];
-        BFlag_new_ROI= [];
         sRoi_file_name=[]
         sRoi_file_info=[];
     end
@@ -17,7 +16,6 @@ classdef ROI_CT < CT_Perfusion
         function this = ROI_CT()
           
            bFlag_Save_Roi_to_csv=false;
-           BFlag_new_ROI = false;
            sRoi_file_name ="Roi_pos_Table_properties.csv";
            sRoi_file_info = dir(sRoi_file_name);
 
@@ -29,7 +27,7 @@ classdef ROI_CT < CT_Perfusion
            this.sRoi_file_info = dir(this.sRoi_file_name);
 
             if(this.sRoi_file_info.bytes)%check if file not empty >0
-            this.bFlag_Roi_saved_in_csv = true;
+            this.bFlag_Roi_saved_in_csv = 
             end
             
 
@@ -51,10 +49,12 @@ classdef ROI_CT < CT_Perfusion
 
                    case 'OK'  
 
-                        if (this.bFlag_Roi_saved_in_csv && ~this.BFlag_new_ROI )%ifndef default
+                        if (~this.bFlag_Save_Roi_to_csv)%ifndef default
+    
+                                if(this.sRoi_file_info.bytes)%check if file not empty >0
                                     this.vec_ROI_pos_data = readmatrix(this.sRoi_file_name);
                                     Output_buffer= this.vec_ROI_pos_data;
-                        
+                                end
 
                         else
                                     imshow(this.Img_present_roi);
@@ -63,9 +63,9 @@ classdef ROI_CT < CT_Perfusion
                                      wait(vec_ROI_draw);
                                      close(gcf);
                                      writematrix(this.vec_ROI_pos_data, this.sRoi_file_name);
-                                     this.BFlag_new_ROI =false;
+                                     this.bFlag_Save_Roi_to_csv = false;
                                      Output_buffer= this.vec_ROI_pos_data;
-                         end 
+                                end 
                                 
                  
 
