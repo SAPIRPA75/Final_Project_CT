@@ -29,8 +29,10 @@ classdef Analysys_CT < ROI_CT
 
         function outputArg = Canny_Edge_Detection(this)
 
-            edges = edge(this.ROI_Mask,'canny',this.Global_image_threshold,0.5); % To detemine Deviation
-            outputArg=edges;
+            %outputArg=imbinarize(this.ROI_Mask, this.Global_image_threshold);
+            outputArg = this.mat_sdicom_Images{this.count_analysys_img,1};
+            %edges = edge(this.ROI_Mask,'canny',this.Global_image_threshold,0.5); % To detemine Deviation
+            %outputArg=edges;
             %outputArg= imfill(edges, 'holes');
             %outputArg = imbinarize(this.ROI_Mask,this.Global_image_threshold);
             % imshow(outputArg);
@@ -43,8 +45,10 @@ classdef Analysys_CT < ROI_CT
 
         function outputArg = HEAD_PERFUSION_Detection(this)
 
-               matCanny_resault = edge(this.ROI_Mask,'canny',this.Global_image_threshold,0.5); % To detemine Deviation
-               dMean_pixelIntensities = mean(matCanny_resault(:));
+               %matCanny_resault = edge(this.ROI_Mask,'canny',this.Global_image_threshold,0.5); % To detemine Deviation
+                %matCanny_resault=imbinarize(this.ROI_Mask, this.Global_image_threshold);
+                
+               dMean_pixelIntensities = mean(this.ROI_Mask(:));
                dTime_set = this.iSet_Counter + this.iBlock_Counter*this.dStep_inteval_PERFUSION;
                sSet_name= "set" + num2str((this.iSet_Counter+1));
                % sBlock_name = "block_" + num2str(this.iBlock_Counter);

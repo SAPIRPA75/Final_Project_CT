@@ -15,6 +15,14 @@ classdef Dialog_box < utilities
             outputArg = obj.Property1 + inputArg;
         end
 
+        function outputArg = Prompt_user_input_request(this,prompt,dlgtitle,fieldsize,definput)
+            
+            outputArg = inputdlg(prompt,dlgtitle,fieldsize,definput);
+            
+
+        end
+
+
         function outputArg = Prompt_user_mssage(this)
             fig = uifigure;
             uialert(fig,"RoI_successfully saved!","Dialog Box","Icon",'success');
