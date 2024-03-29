@@ -8,7 +8,7 @@ classdef CT_Perfusion
         Struct_Dicom_Files = struct();
         csv_file_path = 'Dicom_Table_properties.csv';
         Dicom_file_check= [];
-        Table_Dicom_Full_Data =[];
+       
         UTIL_Dialog =[];
         UTIL_Load = [];
         UTIL_Error_handle = [];
@@ -18,6 +18,7 @@ classdef CT_Perfusion
 
     properties (Access = public)
 
+        Table_Dicom_Full_Data =[];
         App_Chosen_seris=[];
         Chosen_section_data = [];
         Array_Dicom_Paths =[];
@@ -34,20 +35,29 @@ classdef CT_Perfusion
         bIs_Foler_empty = true;
         Table_analysed_ROI_Dicom =[];
         UTIL_freq=[];
-
+        App_Choose_Patient=[];
+        Table_Patient_Name=[];
+        m_matHead_Perfusion_REFF;
+        m_matANGIO_REFF;
         
     end
 
     methods
         function this = CT_Perfusion()
             
-            this.Table_Dicom_Full_Data =this.Create_Table_Data();
+            %this.Table_Dicom_Full_Data =this.Create_Table_Data();
             this.sCurrent_folder = pwd;
             % this.med_Image = this.Set_medicalImage_Struct();
             this.UTIL_Dialog = Dialog_box();
             this.UTIL_Load = Load_Box();
             this.UTIL_Error_handle = Error_Handle();
             this.UTIL_freq = Time_Frequency();
+
+        end
+
+        function [Output_buffer] = Get_Patient_Table_Names(this)
+
+            Output_buffer = readcell("Table_Patient_Names.xlsx");
 
         end
 
@@ -216,19 +226,98 @@ classdef CT_Perfusion
 
         function outputArg = Create_Table_Data(this)
 
-            this.Dicom_file_check = dir(this.csv_file_path);
-            if(isempty(this.Dicom_file_check))
-                  Sselected_Folder = uigetdir();
-                  Table_dicom_collection =dicomCollection(Sselected_Folder);
-                  writetable(Table_dicom_collection, 'Dicom_Table_properties.csv');
-                  outputArg = readtable("Dicom_Table_properties.csv");
+            % %lSize_of_patients = size(this.Table_Patient_Name);
+            % 
+            % if (~isempty(this.App_Choose_Patient))
+            % 
+            %     %for sElement = this.Table_Patient_Name
+            % 
+            %         Sselected_Folder=strcat(pwd,'\',this.App_Choose_Patient);
+            %         Sselected_file_path=strcat(pwd,'\','Dicom_Table_properties_',this.App_Choose_Patient,'.csv');
+            %         fileID = fopen(Sselected_file_path, 'r');
+            % 
+            %         if(fileID == -1)
+            %             Table_dicom_collection =dicomCollection(Sselected_Folder);
+            %             writetable(Table_dicom_collection, Sselected_file_path);
+            %             outputArg = readtable(Sselected_file_path);
+            %             return;
+            %         end
+            % 
+            %     %end
+            % 
+            % end
+            if (isempty(this.App_Choose_Patient))
+                %lSize_of_patients = size(this.Table_Patient_Name);
+                this.App_Choose_Patient=this.Table_Patient_Name{10,1};
+                % for i = 1:lSize_of_patients 
+                %     sElement = this.Table_Patient_Name{i,1};
+                %      Sselected_Folder=strcat(pwd,'\',sElement);
+                %     Sselected_file_path=strcat(pwd,'\','Dicom_Table_properties_',sElement,'.csv');
+                %     fileID = fopen(Sselected_file_path, 'r');
+                % 
+                %     if(fileID == -1)
+                %          Table_dicom_collection =dicomCollection(Sselected_Folder);
+                %           writetable(Table_dicom_collection, Sselected_file_path);
+                %           outputArg = readtable(Sselected_file_path);
+                % 
+                %     end
+                % 
+                % end
+                    
+                Sselected_Folder=strcat(pwd,'\',this.App_Choose_Patient);
+                Sselected_file_path=strcat(pwd,'\','Dicom_Table_properties_',this.App_Choose_Patient,'.csv');
+                fileID = fopen(Sselected_file_path, 'r');
 
-            else
+                if(fileID == -1)
+                     Table_dicom_collection =dicomCollection(Sselected_Folder);
+                      writetable(Table_dicom_collection, Sselected_file_path);
+                      outputArg = readtable(Sselected_file_path);
+                      return;
                 
-               assert(this.Dicom_file_check.bytes >0 , "File is corrupted" );
-               outputArg = readtable("Dicom_Table_properties.csv");
+                else
+                      fclose(fileID);
+                      outputArg = readtable(Sselected_file_path);
+                      return;
+                end
+                    
+            else
+
+                     
+                    % Sselected_Folder=strcat(pwd,'\',this.App_Choose_Patient);
+                    % Sselected_file_path=strcat(pwd,'\',this.App_Choose_Patient,'.csv');
+                    Sselected_Folder=strcat(pwd,'\',this.App_Choose_Patient);
+                    Sselected_file_path=strcat(pwd,'\','Dicom_Table_properties_',this.App_Choose_Patient,'.csv');
+                    fileID = fopen(Sselected_file_path, 'r');
+                    if(fileID == -1)
+                          Table_dicom_collection =dicomCollection(Sselected_Folder);
+                          writetable(Table_dicom_collection, Sselected_file_path);
+                          fclose(fileID);
+                          outputArg = readtable(Sselected_file_path);
+                          return;
+                    else
+    
+                          fclose(fileID);
+                          outputArg = readtable(Sselected_file_path);
+                          return;
+    
+                    end
 
             end
+
+
+            % this.Dicom_file_check = dir(this.csv_file_path);
+            % if(isempty(this.Dicom_file_check))
+            %       Sselected_Folder = uigetdir();
+            %       Table_dicom_collection =dicomCollection(Sselected_Folder);
+            %       writetable(Table_dicom_collection, 'Dicom_Table_properties.csv');
+            %       outputArg = readtable("Dicom_Table_properties.csv");
+            % 
+            % else
+            % 
+            %    assert(this.Dicom_file_check.bytes >0 , "File is corrupted" );
+            %    outputArg = readtable("Dicom_Table_properties.csv");
+            % 
+            % end
 
         end
 
@@ -237,9 +326,15 @@ classdef CT_Perfusion
                 Out_buffer={this.Chosen_section_data{2},this.Chosen_section_data{3},this.Chosen_section_data{4},this.Chosen_section_data{9}};
 
         end
-       
 
+        function out = Get_Reff_Images(this)
+        load('ANGIO_REFF.mat','variable');
+        this.m_matANGIO_REFF= variable;
+        imshow(this.m_matANGIO_REFF);
+        load('Head_Perfusion_REFF.mat','variable');
+        this.m_matHead_Perfusion_REFF =variable; 
+        out = this;
+        end
 
-
-    end
+        end
 end

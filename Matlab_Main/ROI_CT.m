@@ -20,11 +20,11 @@ classdef ROI_CT < CT_Perfusion
     methods
         function this = ROI_CT()
           
-           bFlag_Save_Roi_to_csv=false;
-           BFlag_new_ROI = false;
-           sRoi_file_name ="Roi_pos_Table_properties.csv";
-           sRoi_file_info = dir(sRoi_file_name);
-           sList_of_angio_ROI = 'Table_list_Angio_Roi.csv';
+           %bFlag_Save_Roi_to_csv=false;
+           this.BFlag_new_ROI = false;
+           this.sRoi_file_name ="Roi_pos_Table_properties.csv";
+           this.sRoi_file_info = dir("Roi_pos_Table_properties.csv");%sRoi_file_name);
+           this.sList_of_angio_ROI = 'Table_list_Angio_Roi.csv';
 
         end
 
@@ -32,12 +32,14 @@ classdef ROI_CT < CT_Perfusion
            
             this.sList_of_angio_ROI ='Table_list_Angio_Roi.csv';
             %this.sRoi_file_name ="Roi_pos_Table_properties.csv";
-            sFull_Path_chosen_roi = strcat(this.App_Chosen_ROI,'.csv');
+            %sFull_Path_chosen_roi = strcat(this.App_Chosen_ROI,'.csv');
             this.sFull_Path_chosen_seg__roi = strcat(this.App_Chosen_ROI,'.m');
            this.sRoi_file_info = dir(this.sFull_Path_chosen_seg__roi);
 
-            if(this.sRoi_file_info.bytes)%check if file not empty >0
+            if(this.sRoi_file_info.bytes && ~this.BFlag_new_ROI)%check if file not empty >0
             this.bFlag_Roi_saved_in_csv = true;
+            Output_buffer=this.sFull_Path_chosen_seg__roi;
+            return;
             end
             
 
@@ -129,40 +131,25 @@ classdef ROI_CT < CT_Perfusion
         end
 
         function Output_buffer= Get_Mask_img(this)
-
-          %  filesInfo = dir(this.sFull_Path_chosen_seg__roi);
-           % path =filesInfo(1).folder; 
-            % Extract the full paths of the files
-          %  fullPaths = fullfile(path,this.sFull_Path_chosen_seg__roi);
-
-            %[xPos,yPos]= angio_ACA_TOP(this.mat_sdicom_Images{1,:});
-           %run(fullPaths);
-            %run(this.sFull_Path_chosen_seg__roi);
-
-            [xPos,yPos] = angio_mca_right(this.mat_sdicom_Images{1,:});
-          % switch temp
-          %     case "angio_ACA_TOP" 
-          %        [xPos,yPos] = angio_ACA_TOP(this.mat_sdicom_Images{1,:});
-          %     case "angio_mca_right"
-          %        [xPos,yPos] = angio_mca_right(this.mat_sdicom_Images{1,:});
-          %     case "angio_mca_left"
-          %       [xPos,yPos] = angio_ACA_TOP(this.mat_sdicom_Images{1,:});
-          % 
-          %     otherwise
-          % 
-          % end
-             %[xPos,yPos] = angio_ACA_TOP(this.mat_sdicom_Images{1,:});
-            %[xPos,yPos]=feval(this.App_Chosen_ROI,this.mat_sdicom_Images{1,:});
-
-            %temp = string(this.sFull_Path_chosen_seg__roi);
-            %temp1 = temp(1);
-            %run(temp1);
+            mat_Local_matrix_3D = this.mat_sdicom_Images{1,:};
+            MIP_image = max(mat_Local_matrix_3D, [], 3);
             
+          switch strtrim(this.App_Chosen_ROI)
+              case "angio_ACA_TOP" 
+                 [xPos,yPos] = angio_ACA_TOP(this.mat_sdicom_Images{1,:});
+              case "angio_mca_right"
+                 [xPos,yPos] = angio_mca_right(this.mat_sdicom_Images{1,:});
+              case "Reg_MCA_LEFT"
+                [xPos,yPos] = Reg_MCA_LEFT(this.mat_sdicom_Images{1,:});
+
+              otherwise
+                  [xPos,yPos] = angio_mca_right(this.mat_sdicom_Images{1,:});
+          end
+
             roiMask = poly2mask(xPos, yPos, size(this.mat_sdicom_Images{this.count_analysys_img,:}, 1), size(this.mat_sdicom_Images{this.count_analysys_img,:}, 1));
             roi_img = this.mat_sdicom_Images{this.count_analysys_img,:};
             roi_img(repmat(~roiMask, [1, 1, size(this.mat_sdicom_Images{this.count_analysys_img,:}, 3)])) = 0;
-            %Output_buffer= maskedImage;
-           Output_buffer= roi_img;
+            Output_buffer= roi_img;
           
             
             

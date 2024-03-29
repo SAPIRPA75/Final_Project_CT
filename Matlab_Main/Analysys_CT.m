@@ -14,6 +14,7 @@ classdef Analysys_CT < ROI_CT
         iX_Time_Vector = [];
         iY_Mean_Intensity_vector = [];
         iFrame_number_chosen =[];
+        m_matRegistered;
     end
 
     methods
@@ -74,6 +75,18 @@ classdef Analysys_CT < ROI_CT
                     this.iSet_Counter = this.iSet_Counter +1;
                 end
 
-           end
+         end
+
+
+         function out = Get_registered_Image(this,g_iCounterMatDetection)
+
+                load('Regestrions_Points.mat');
+                load('ANGIO_REFF.mat');
+                t = fitgeotform2d(mp,fp,"projective");
+                pRfixed = imref2d(size(this.mat_Chosen_Edge_Detection{g_iCounterMatDetection}));
+                this.m_matRegistered = imwarp(variable,t,OutputView=pRfixed);
+                out=this;
+
+         end
     end
 end
