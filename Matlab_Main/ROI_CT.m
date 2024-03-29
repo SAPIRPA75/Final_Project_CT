@@ -135,15 +135,15 @@ classdef ROI_CT < CT_Perfusion
             MIP_image = max(mat_Local_matrix_3D, [], 3);
             
           switch strtrim(this.App_Chosen_ROI)
-              case "angio_ACA_TOP" 
-                 [xPos,yPos] = angio_ACA_TOP(this.mat_sdicom_Images{1,:});
-              case "angio_mca_right"
-                 [xPos,yPos] = angio_mca_right(this.mat_sdicom_Images{1,:});
+              case "Reg_ACA_Top" 
+                 [xPos,yPos] = Reg_ACA_Top(this.mat_sdicom_Images{1,:});
+              case "Reg_MCA_Right"
+                 [xPos,yPos] = Reg_MCA_Right(this.mat_sdicom_Images{1,:});
               case "Reg_MCA_LEFT"
                 [xPos,yPos] = Reg_MCA_LEFT(this.mat_sdicom_Images{1,:});
 
               otherwise
-                  [xPos,yPos] = angio_mca_right(this.mat_sdicom_Images{1,:});
+                   [xPos,yPos] = Reg_MCA_Right(this.mat_sdicom_Images{1,:});
           end
 
             roiMask = poly2mask(xPos, yPos, size(this.mat_sdicom_Images{this.count_analysys_img,:}, 1), size(this.mat_sdicom_Images{this.count_analysys_img,:}, 1));
