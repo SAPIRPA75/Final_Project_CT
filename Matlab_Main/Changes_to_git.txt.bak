@@ -1,0 +1,25 @@
+Added advanced plot for interpultion {i.e 4 times sample rate}
+Added work path dir to chosen ROI { e.g For F_1990 get the 3 corresponding ROI}
+Added ROI ONLY Plot
+
+
+// F_1980
+angio : 348
+perfusion : 192
+
+
+//M_1962
+
+angio : 329
+
+//M_1956
+
+angio : 357
+perfusion : 193
+
+
+****************************
+19/04/2024
+
+Added Step time interval to plot
+

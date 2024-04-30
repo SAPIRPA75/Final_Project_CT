@@ -37,7 +37,8 @@ classdef CT_Perfusion
         UTIL_freq=[];
         App_Choose_Patient=[];
         Table_Patient_Name=[];
-
+        m_matHead_Perfusion_REFF;
+        m_matANGIO_REFF;
         
     end
 
@@ -326,10 +327,41 @@ classdef CT_Perfusion
 
         end
 
-        function out = Get_Reff_Images(this)
-       
+        function out = Get_Reff_Images(this,i_sChosenSeris,i_iCounterFrameInApp,i_sFileLocation)
+            this.m_pUtilFolder.m_sFolderPath=i_sFileLocation;
+            switch i_sChosenSeris
+                case 'HEAD PERFUSION'
+                    this.m_matHead_Perfusion_REFF=this.mat_Chosen_Edge_Detection{i_iCounterFrameInApp,1};
+                    %load('ANGIO_REFF.mat','variable');
+                    variable= this.m_matHead_Perfusion_REFF;
+                    imshow(this.m_matHead_Perfusion_REFF*25);
+                    title("Head Perfusion REFF");
+                    ylabel("Mean Pixel intensity [2^16]");
+                    xlabel("Matrix 512X512 uint16");
+                    save(fullfile(this.m_pUtilFolder.m_sFolderPath, 'Head_Perfusion_REFF.mat'), 'variable');
+                    saveas(gcf,fullfile(this.m_pUtilFolder.m_sFolderPath, 'Head_Perfusion_REFF.fig'));
+                    saveas(gcf,fullfile(this.m_pUtilFolder.m_sFolderPath,'Head_Perfusion_REF.png'));
+                      close(gcf);
+                    %load('Head_Perfusion_REFF.mat','variable');
+                    %this.m_matHead_Perfusion_REFF =variable; 
+                    out = this;
+                    return;
 
-
+                case 'ANGIO  F_0.7 iMAR'
+                         this.m_matANGIO_REFF=this.mat_Chosen_Edge_Detection{i_iCounterFrameInApp,1};
+                         variable =  this.m_matANGIO_REFF;
+                         save(fullfile(this.m_pUtilFolder.m_sFolderPath, 'Angio_REFF.mat'), 'variable');
+                         imshow(this.m_matANGIO_REFF*25);
+                         title("Angio REFF");
+                         ylabel("Mean Pixel intensity [2^16]");
+                         xlabel("Matrix 512X512 uint16");
+                         saveas(gcf,fullfile(this.m_pUtilFolder.m_sFolderPath, 'Angio_REFF.fig'));
+                         saveas(gcf,fullfile(this.m_pUtilFolder.m_sFolderPath,'Angio_REFF.png'));
+                         close(gcf);
+                         out = this;
+                        return;
+            end
+        end
 
         end
 end

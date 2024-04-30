@@ -25,8 +25,9 @@ classdef Dialog_box < utilities
 
         function outputArg = Prompt_user_mssage(this)
             fig = uifigure;
-            uialert(fig,"RoI_successfully saved!","Dialog Box","Icon",'success');
+            uialert(fig,"Angio_REFF Not Exist!","Invalid File","Icon",'error');
             close(fig);
+            outputArg=this;
 
         end
     end
