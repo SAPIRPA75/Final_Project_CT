@@ -45,9 +45,7 @@ classdef CT_Perfusion
     methods
         function this = CT_Perfusion()
             
-            %this.Table_Dicom_Full_Data =this.Create_Table_Data();
             this.sCurrent_folder = pwd;
-            % this.med_Image = this.Set_medicalImage_Struct();
             this.UTIL_Dialog = Dialog_box();
             this.UTIL_Load = Load_Box();
             this.UTIL_Error_handle = Error_Handle();
@@ -58,6 +56,11 @@ classdef CT_Perfusion
         function [Output_buffer] = Get_Patient_Table_Names(this)
 
             Output_buffer = readcell("Table_Patient_Names.xlsx");
+
+        end
+
+        function out= Get_Patient_MCA_Index(this)
+
 
         end
 
@@ -84,7 +87,7 @@ classdef CT_Perfusion
         function Out_buffer = Create_analysed_ROI_file(this)
                 
             sourceTable=dicomCollection(this.sNew_Dicom_file_folder);
-            Saved_location = [this.sNew_Dicom_file_folder,'\','analysed_ROI_Dicom_Images.csv']
+            Saved_location = [this.sNew_Dicom_file_folder,'\','analysed_ROI_Dicom_Images.csv'];
              writetable(sourceTable, Saved_location);
              Out_buffer = readtable(Saved_location);
 
@@ -107,13 +110,9 @@ classdef CT_Perfusion
         end
 
         function Output_Buffer = Set_New_Sorted_Mat_Dicom(this)
-            
-             % iRow_Location_in_table=[];
-             % icol_Location_in_table= [];
-             % [iRow_Location_in_table,icol_Location_in_table]=size(this.arr_New_Sorted_Dicom_Images);
+        
 
            for i = 1 : this.iRow_Location_in_table
-
             sRead_img = this.arr_New_Sorted_Dicom_Images{i,1};
             Output_Buffer{i,:}= dicomread(sRead_img,"frames",1); 
 
@@ -189,7 +188,6 @@ classdef CT_Perfusion
                 this.arr_sNot_Sorted_Dicom_Files{i,2} = info.InstanceNumber;
                 InstanceNumber(i)= info.InstanceNumber;% for Debug Process % mybe needed serisTime for differnt seris
 
-                % waitbar(i/iRow_Location_in_table, h, sprintf('Creating Dicom Matrix...: %d%%', int32((i/iRow_Location_in_table)*100)));
                 this.UTIL_Load.Porcess_load(i/iRow_Location_in_table,pLoad_Handle,'Creating dicom metrix');
              end
 
@@ -226,43 +224,8 @@ classdef CT_Perfusion
 
         function outputArg = Create_Table_Data(this)
 
-            % %lSize_of_patients = size(this.Table_Patient_Name);
-            % 
-            % if (~isempty(this.App_Choose_Patient))
-            % 
-            %     %for sElement = this.Table_Patient_Name
-            % 
-            %         Sselected_Folder=strcat(pwd,'\',this.App_Choose_Patient);
-            %         Sselected_file_path=strcat(pwd,'\','Dicom_Table_properties_',this.App_Choose_Patient,'.csv');
-            %         fileID = fopen(Sselected_file_path, 'r');
-            % 
-            %         if(fileID == -1)
-            %             Table_dicom_collection =dicomCollection(Sselected_Folder);
-            %             writetable(Table_dicom_collection, Sselected_file_path);
-            %             outputArg = readtable(Sselected_file_path);
-            %             return;
-            %         end
-            % 
-            %     %end
-            % 
-            % end
             if (isempty(this.App_Choose_Patient))
-                %lSize_of_patients = size(this.Table_Patient_Name);
                 this.App_Choose_Patient=this.Table_Patient_Name{10,1};
-                % for i = 1:lSize_of_patients 
-                %     sElement = this.Table_Patient_Name{i,1};
-                %      Sselected_Folder=strcat(pwd,'\',sElement);
-                %     Sselected_file_path=strcat(pwd,'\','Dicom_Table_properties_',sElement,'.csv');
-                %     fileID = fopen(Sselected_file_path, 'r');
-                % 
-                %     if(fileID == -1)
-                %          Table_dicom_collection =dicomCollection(Sselected_Folder);
-                %           writetable(Table_dicom_collection, Sselected_file_path);
-                %           outputArg = readtable(Sselected_file_path);
-                % 
-                %     end
-                % 
-                % end
                     
                 Sselected_Folder=strcat(pwd,'\',this.App_Choose_Patient);
                 Sselected_file_path=strcat(pwd,'\','Dicom_Table_properties_',this.App_Choose_Patient,'.csv');
@@ -283,8 +246,6 @@ classdef CT_Perfusion
             else
 
                      
-                    % Sselected_Folder=strcat(pwd,'\',this.App_Choose_Patient);
-                    % Sselected_file_path=strcat(pwd,'\',this.App_Choose_Patient,'.csv');
                     Sselected_Folder=strcat(pwd,'\',this.App_Choose_Patient);
                     Sselected_file_path=strcat(pwd,'\','Dicom_Table_properties_',this.App_Choose_Patient,'.csv');
                     fileID = fopen(Sselected_file_path, 'r');
@@ -305,19 +266,7 @@ classdef CT_Perfusion
             end
 
 
-            % this.Dicom_file_check = dir(this.csv_file_path);
-            % if(isempty(this.Dicom_file_check))
-            %       Sselected_Folder = uigetdir();
-            %       Table_dicom_collection =dicomCollection(Sselected_Folder);
-            %       writetable(Table_dicom_collection, 'Dicom_Table_properties.csv');
-            %       outputArg = readtable("Dicom_Table_properties.csv");
-            % 
-            % else
-            % 
-            %    assert(this.Dicom_file_check.bytes >0 , "File is corrupted" );
-            %    outputArg = readtable("Dicom_Table_properties.csv");
-            % 
-            % end
+          
 
         end
 
@@ -332,7 +281,6 @@ classdef CT_Perfusion
             switch i_sChosenSeris
                 case 'HEAD PERFUSION'
                     this.m_matHead_Perfusion_REFF=this.mat_Chosen_Edge_Detection{i_iCounterFrameInApp,1};
-                    %load('ANGIO_REFF.mat','variable');
                     variable= this.m_matHead_Perfusion_REFF;
                     imshow(this.m_matHead_Perfusion_REFF*25);
                     title("Head Perfusion REFF");
@@ -342,8 +290,6 @@ classdef CT_Perfusion
                     saveas(gcf,fullfile(this.m_pUtilFolder.m_sFolderPath, 'Head_Perfusion_REFF.fig'));
                     saveas(gcf,fullfile(this.m_pUtilFolder.m_sFolderPath,'Head_Perfusion_REF.png'));
                       close(gcf);
-                    %load('Head_Perfusion_REFF.mat','variable');
-                    %this.m_matHead_Perfusion_REFF =variable; 
                     out = this;
                     return;
 

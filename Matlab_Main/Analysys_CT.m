@@ -19,50 +19,50 @@ classdef Analysys_CT < ROI_CT
         m_CMaskROIAnalysys;
         m_iColoredSet;
         m_MatColorizedArtery;
+        m_iNumOfTables;
+        
+    end
+        
+    properties(Access = private)
+        
+            m_iStd;
+            m_iPickValue;
+
     end
 
-    methods
+
+    methods (Access = public)
         function this = Analysys_CT()
 
             this.dStep_inteval_PERFUSION = 1/this.iRepiptive_frame_PERFUSION;
             this.m_pMskBox = Dialog_box();
             this.m_CMaskROIAnalysys = cell(30,23);
             this.m_iColoredSet=1;
-            % columnNames = {'set','MeanIntensity', 'CurrentTime', 'BinaryImage'};
-            % this.table_Perfusion = table('Size',[690 4],'VariableNames',columnNames,'VariableTypes',{'double','double','double','cell'});
+            this.m_iNumOfTables= 1;
+            this.m_iStd=0;
+            this.m_iPickValue=0;
 
                                                         
         end
 
         function outputArg = Canny_Edge_Detection(this)
 
-            %outputArg=imbinarize(this.ROI_Mask, this.Global_image_threshold);
             outputArg = this.mat_sdicom_Images{this.count_analysys_img,1};
-            %edges = edge(this.ROI_Mask,'canny',this.Global_image_threshold,0.5); % To detemine Deviation
-            %outputArg=edges;
-            %outputArg= imfill(edges, 'holes');
-            %outputArg = imbinarize(this.ROI_Mask,this.Global_image_threshold);
-            % imshow(outputArg);
-            % 
-            % close(gcf);
-
-           %outputArg = edge(this.ROI_Mask,'canny',[0.01 0.05],0.5); % To detemine Deviation
            
         end
 
-        function outputArg = HEAD_PERFUSION_Detection(this)
+        function outputArg = HEAD_PERFUSION_Detection(this,i_sFolderPlotPath)
 
-               %matCanny_resault = edge(this.ROI_Mask,'canny',this.Global_image_threshold,0.5); % To detemine Deviation
-                %matCanny_resault=imbinarize(this.ROI_Mask, this.Global_image_threshold);
-                
+              
+
                dMean_pixelIntensities = mean(this.ROI_Mask(:));
                dTime_set = this.iSet_Counter + this.iBlock_Counter*this.dStep_inteval_PERFUSION;
                this.m_CMaskROIAnalysys{(this.iSet_Counter+1),this.iBlock_Counter}=this.ROI_Mask; 
+              
+             
                sSet_name= "set" + num2str((this.iSet_Counter+1));
-               % sBlock_name = "block_" + num2str(this.iBlock_Counter);
                sBlock_name= {dMean_pixelIntensities,dTime_set};
                this.table_Perfusion{this.iBlock_Counter,sSet_name} = sBlock_name;
-               %%outputArg =this.table_Perfusion;
                outputArg=this;
 
 
@@ -98,7 +98,6 @@ classdef Analysys_CT < ROI_CT
                  l_pSaveLastDir = pwd;
                  this.m_pUtilFolder.m_sFolderPath=i_sFolderPlotPath;
                  cd(this.m_pUtilFolder.m_sFolderPath);
-                %this.m_pUtilFolder.m_sFolderPath=i_sDirRoiPath;% Change Dir for Spesific ROI {i.e every patient have therre own ROI
                     if(exist(fullfile(this.m_pUtilFolder.m_sFolderPath,'Regestrions_Points.mat'),"file"))
                         load(fullfile(this.m_pUtilFolder.m_sFolderPath,'Regestrions_Points.mat'));
                          load(fullfile(this.m_pUtilFolder.m_sFolderPath,'ANGIO_REFF.mat'));
@@ -143,36 +142,171 @@ classdef Analysys_CT < ROI_CT
          function out = GetAbsImgDiff(this,first,second)
 
 
-                  diff1 = imabsdiff(second, first);  
-                  l_dmean=mean(diff1(:));
-                % Combine differences into a single color image for visualization
-                if (l_dmean > 0.1319*1.15 || l_dmean < 0.1319*0.85)
-                     combined_diff = cat(3,zeros(size(diff1)) , diff1, zeros(size(diff1)));  
-                else
-                     combined_diff = cat(3, diff1, zeros(size(diff1)), zeros(size(diff1)));  
+                   diff1 = imabsdiff(second, first);
+
+                   l_imax = max(first(:));
+
+                   l_iGain = double(double(this.iY_Mean_Intensity_vector(this.m_iColoredSet))/double(l_imax));
+
+                   l_matGainImg= double(first) * l_iGain;
+
+                l_imax = max(l_matGainImg(:));
+
+              
+                
+                % Initialize color channels
+                red_channel = zeros(size(l_matGainImg));
+                green_channel = zeros(size(l_matGainImg));
+                blue_channel = zeros(size(l_matGainImg));
+                
+
+
+                % Assign colors based on thresholds
+                for i = 1:size(l_matGainImg, 1)
+                    for j = 1:size(l_matGainImg, 2)
+
+                        if (l_matGainImg(i, j) < this.m_iPickValue && l_matGainImg(i, j) >0  )
+                                
+
+                              % Define thresholds based on sigma
+                            threshold1 =  this.m_iPickValue - this.m_iStd; % 1 sigma
+                            threshold2 =  this.m_iPickValue - 2 * this.m_iStd; % 2 sigma
+                            % threshold3 =  this.m_iPickValue - 3 * this.m_iStd; % 3 sigma
+
+                             if l_matGainImg(i, j) < threshold2
+                            % Green for values greater than 3 sigma
+                            green_channel(i, j) = 1;
+                        elseif l_matGainImg(i, j) > threshold2 && l_matGainImg(i, j) < threshold1
+                            % Orange for values between 2 sigma and 3 sigma
+                            red_channel(i, j) = 1;
+                            green_channel(i, j) = 0.5;
+                        elseif l_matGainImg(i, j) < this.m_iPickValue &&  l_matGainImg(i, j) > threshold1
+                            % Red for values between mean + sigma and mean + 2 sigma
+                            red_channel(i, j) = 1;
+                             end
+
+
+                        elseif(l_matGainImg(i, j) >0)
+                                
+                                threshold1 =  this.m_iPickValue + this.m_iStd; % 1 sigma
+                                threshold2 =  this.m_iPickValue + 2 * this.m_iStd; % 2 sigma
+                                % threshold3 =  this.m_iPickValue + 3 * this.m_iStd; % 3 sigma
+    
+    
+                                if l_matGainImg(i, j) > threshold2
+                                % Green for values greater than 3 sigma
+                                green_channel(i, j) = 1;
+                            elseif l_matGainImg(i, j) < threshold2 && l_matGainImg(i, j) > threshold1
+                                % Orange for values between 2 sigma and 3 sigma
+                                red_channel(i, j) = 1;
+                                green_channel(i, j) = 0.5;
+                            elseif l_matGainImg(i, j) > this.m_iPickValue &&  l_matGainImg(i, j)< threshold1
+                                % Red for values between mean + sigma and mean + 2 sigma
+                                red_channel(i, j) = 1;
+                                 end
+
+
+
+                        end
+
+                       
+                    end
                 end
-                out = combined_diff;
+
+
+
+
+
+                % Combine the color channels using cat function
+                colored_image = cat(3, red_channel, green_channel, blue_channel);
+                out = colored_image;
 
          end
 
 
          function out = PlotArteryColorChanges(this)
 
+                    this=this.Calculate_Standard_Deviation();
+                    
                  l_bGuardMaxSet = 1;
                  if (l_bGuardMaxSet)
-                this.m_MatColorizedArtery=this.GetAbsImgDiff(this.m_CMaskROIAnalysys{this.m_iColoredSet,8}*25,this.m_CMaskROIAnalysys{(this.m_iColoredSet+1),8}*25);
+                this.m_MatColorizedArtery=this.GetAbsImgDiff(this.m_CMaskROIAnalysys{this.m_iColoredSet,str2double(this.iFrame_number_chosen)}*25,this.m_CMaskROIAnalysys{(this.m_iColoredSet+1),str2double(this.iFrame_number_chosen)}*25);
                  end
                 % Display the combined differences as a color image
                 this.m_iColoredSet =  this.m_iColoredSet+1;
                 if(this.m_iColoredSet >= 30)
                     l_bGuardMaxSet = 0;
                 end
-                %figure;
-                %imshow(this.m_MatColorizedArtery*100);
-                %title('Visualized Differences');
-               
-
+             
              out=this;
          end
+
+
+         function Plot_Specific_TTP_ROI(this,i_iPosX,i_iPosY,i_vecTime,i_iFrame_Counter)
+                
+
+             
+
+             l_istaticCounter=0;
+             l_iTime_axis = 0:(this.dStep_inteval_PERFUSION):30;
+                l_bFirstElemnet=1;
+             for index = 1: numel(this.m_CMaskROIAnalysys)
+                 
+                 l_iIndex_mean=1;
+                 if(mod(index,23) == str2double(this.iFrame_number_chosen))
+                        
+                    
+
+                         if l_bFirstElemnet
+                                l_MatstoredMatrix= this.m_CMaskROIAnalysys{index};
+                                vecPixel_Intensities= l_MatstoredMatrix(i_iPosY,i_iPosX);
+                                 l_bFirstElemnet=0;
+                         end
+    
+    
+                                 l_MatstoredMatrix= this.m_CMaskROIAnalysys{index};
+                                 l_dPixel_Intensities= l_MatstoredMatrix(i_iPosY,i_iPosX);
+                                 vecPixel_Intensities=[vecPixel_Intensities,l_dPixel_Intensities]; 
+
+                     
+
+                      l_iIndex_mean = l_iIndex_mean +1;  
+                 end
+             end
+
+             l_handleInter = interp1(i_vecTime(7:end), double(vecPixel_Intensities(7:end)),l_iTime_axis, 'linear');
+             
+             figure;
+
+
+              
+              plot(i_vecTime(7:end),double(vecPixel_Intensities(7:end)),'o',l_iTime_axis,l_handleInter,':.');
+              xlabel('Time [sec]');
+              ylabel('Vessel Intensity [HU]');
+              title('TIME ATTENUATION CURVE');
+              colorbar;
+
+
+
+         end
+    end
+
+    methods (Access = private)
+
+        function out = Calculate_Standard_Deviation(this)
+           
+            this.m_iPickValue = mean(this.iY_Mean_Intensity_vector);
+            
+            sum_squared_deviations = sum((this.iY_Mean_Intensity_vector - this.m_iPickValue).^2);
+            
+            sample_variance = sum_squared_deviations / (length(this.iY_Mean_Intensity_vector) - 1);
+            
+            this.m_iStd = sqrt(sample_variance);
+
+            this.m_iPickValue= max(this.iY_Mean_Intensity_vector);
+
+            out=this;
+
+        end
     end
 end

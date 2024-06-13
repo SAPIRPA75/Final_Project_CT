@@ -5,15 +5,22 @@ classdef utilities
     properties ( Access = public)
        
         m_sFolderPath;
+        m_pHandleInterp;
     end
 
     methods
         function this = utilities()
            
+            this.m_pHandleInterp = [];
         end
 
 
-
+        function out = Set_interp_Handle(this,i_pHandlePlot)
+                
+            this.m_pHandleInterp = i_pHandlePlot;
+            out =this;
+        end
+        
         function outputArg = Create_Plot_Folder(this,l_sFloderName)
             folderName = l_sFloderName;  
             this.m_sFolderPath = fullfile(pwd, folderName); 

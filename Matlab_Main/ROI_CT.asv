@@ -21,7 +21,6 @@ classdef ROI_CT < CT_Perfusion
     methods
         function this = ROI_CT()
           
-           %bFlag_Save_Roi_to_csv=false;
            this.BFlag_new_ROI = false;
            this.sRoi_file_name ="Roi_pos_Table_properties.csv";
            this.sRoi_file_info = dir("Roi_pos_Table_properties.csv");%sRoi_file_name);
@@ -40,8 +39,6 @@ classdef ROI_CT < CT_Perfusion
         function Output_buffer = Draw_ROI(this)
            
             this.sList_of_angio_ROI ='Table_list_Angio_Roi.csv';
-            %this.sRoi_file_name ="Roi_pos_Table_properties.csv";
-            %sFull_Path_chosen_roi = strcat(this.App_Chosen_ROI,'.csv');
             this.sFull_Path_chosen_seg__roi = strcat(this.App_Chosen_ROI,'.m');
            this.sRoi_file_info = dir(this.sFull_Path_chosen_seg__roi);
 
@@ -57,11 +54,6 @@ classdef ROI_CT < CT_Perfusion
             
             selection = uiconfirm(fig,"Create The ROI By Circle your desired location",'ROI_Creation', "Options",["OK","cancel"],"DefaultOption",1);
             close(fig);
-            %choise = questdlg("Create The ROI By Circle your desired location",'ROI_Creation','OK','Help','Cancel');
-             
-            % if (~this.UTIL_Error_handle.Assert_handle(choise,"Dialog failed",this.UTIL_Error_handle.handle_levles.WARNING))
-            %         return;
-            % end
 
             
 
@@ -71,8 +63,6 @@ classdef ROI_CT < CT_Perfusion
                    case 'OK'  
 
                         if (this.bFlag_Roi_saved_in_csv && ~this.BFlag_new_ROI )%ifndef default
-                                %this.vec_ROI_pos_data = readmatrix(sFull_Path_chosen_roi);
-                                   % Output_buffer= this.vec_ROI_pos_data;
                                  Output_buffer=this.sFull_Path_chosen_seg__roi;
 
 
@@ -83,12 +73,6 @@ classdef ROI_CT < CT_Perfusion
                                     imageSegmenter(this.Img_present_roi);
 
 
-                                    %restore
-                                    %imshow(this.Img_present_roi);
-                                     %vec_ROI_draw = drawfreehand;
-                                     %this.vec_ROI_pos_data= vec_ROI_draw.Position;
-                                     %wait(vec_ROI_draw);
-                                     %close(gcf);
 
 
 
@@ -96,17 +80,10 @@ classdef ROI_CT < CT_Perfusion
                                      this.sRoi_input_name = char(this.sRoi_input_name{:});
                                      fileID = fopen(this.sList_of_angio_ROI, 'a');
                                      if fileID == -1
-                                         %writematrix(this.sRoi_input_name,this.sList_of_angio_ROI);
-                                          %fprintf(fileID, '%s\n', this.sRoi_input_name);
-                                          %error_message
                                      end
                                      fprintf(fileID, '%s\n', this.sRoi_input_name);
                                      fclose(fileID);
-                                     %writematrix(this.sRoi_input_name,this.sList_of_angio_ROI);
-
                                      Full_name_with_roi =[this.sRoi_input_name,'.csv'];
-                                     %writematrix(this.vec_ROI_pos_data, Full_name_with_roi);
-
                                      
                                      this.BFlag_new_ROI =false;
                                      Output_buffer=this.sFull_Path_chosen_seg__roi;
@@ -118,13 +95,6 @@ classdef ROI_CT < CT_Perfusion
                                      end 
                                 
                  
-
-                                     
-
-
-                         
-                               
-
 
                    case 'Help'
                                 
@@ -140,8 +110,6 @@ classdef ROI_CT < CT_Perfusion
         end
 
         function Output_buffer= Get_Mask_img(this,i_sDirRoiPath)
-            %mat_Local_matrix_3D = this.mat_sdicom_Images{1,:};
-           % MIP_image = max(mat_Local_matrix_3D, [], 3);
             l_pSaveLastDir = pwd;
             this.m_pUtilFolder.m_sFolderPath=i_sDirRoiPath;% Change Dir for Spesific ROI {i.e every patient have therre own ROI
             cd(this.m_pUtilFolder.m_sFolderPath);
@@ -161,10 +129,10 @@ classdef ROI_CT < CT_Perfusion
             roiMask = poly2mask(xPos, yPos, size(this.mat_sdicom_Images{this.count_analysys_img,:}, 1), size(this.mat_sdicom_Images{this.count_analysys_img,:}, 1));
             roi_img = this.mat_sdicom_Images{this.count_analysys_img,:};
             roi_img(repmat(~roiMask, [1, 1, size(this.mat_sdicom_Images{this.count_analysys_img,:}, 3)])) = 0;
-             if(~exist('ROI_Only.png',"file"))
+             if(~exist(strcat('ROI_Only_',this.App_Chosen_ROI,'.png'),"file"))
                 l_matBinaryRep=imbinarize(roi_img,graythresh(roi_img));
-                l_sROIFile=strcat('ROI_Only_',this.App_Chosen_ROI,'')
-                 imwrite(l_matBinaryRep, "ROI_Only.png");
+                l_sROIFile=strcat('ROI_Only_',this.App_Chosen_ROI,'.png');
+                 imwrite(l_matBinaryRep, l_sROIFile);
               end
             cd(l_pSaveLastDir);% Back the working Directory
             Output_buffer= roi_img;
